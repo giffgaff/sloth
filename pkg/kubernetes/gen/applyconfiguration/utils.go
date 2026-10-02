@@ -8,7 +8,7 @@ import (
 	slothv1 "github.com/slok/sloth/pkg/kubernetes/gen/applyconfiguration/sloth/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
-	testing "k8s.io/client-go/testing"
+	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 )
 
 // ForKind returns an apply configuration type for the given GroupVersionKind, or nil if no
@@ -36,11 +36,15 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &slothv1.SLIRawApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("SLO"):
 		return &slothv1.SLOApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("SLOPlugin"):
+		return &slothv1.SLOPluginApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("SLOPlugins"):
+		return &slothv1.SLOPluginsApplyConfiguration{}
 
 	}
 	return nil
 }
 
-func NewTypeConverter(scheme *runtime.Scheme) *testing.TypeConverter {
-	return &testing.TypeConverter{Scheme: scheme, TypeResolver: internal.Parser()}
+func NewTypeConverter(scheme *runtime.Scheme) managedfields.TypeConverter {
+	return managedfields.NewSchemeTypeConverter(scheme, internal.Parser())
 }

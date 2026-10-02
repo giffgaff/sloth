@@ -10,6 +10,9 @@ import (
 
 // PrometheusServiceLevelApplyConfiguration represents a declarative configuration of the PrometheusServiceLevel type for use
 // with apply.
+//
+// PrometheusServiceLevel is the expected service quality level using Prometheus
+// as the backend used by Sloth.
 type PrometheusServiceLevelApplyConfiguration struct {
 	metav1.TypeMetaApplyConfiguration    `json:",inline"`
 	*metav1.ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
@@ -27,6 +30,8 @@ func PrometheusServiceLevel(name, namespace string) *PrometheusServiceLevelApply
 	b.WithAPIVersion("sloth.slok.dev/v1")
 	return b
 }
+
+func (b PrometheusServiceLevelApplyConfiguration) IsApplyConfiguration() {}
 
 // WithKind sets the Kind field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
@@ -202,8 +207,24 @@ func (b *PrometheusServiceLevelApplyConfiguration) WithStatus(value *PrometheusS
 	return b
 }
 
+// GetKind retrieves the value of the Kind field in the declarative configuration.
+func (b *PrometheusServiceLevelApplyConfiguration) GetKind() *string {
+	return b.TypeMetaApplyConfiguration.Kind
+}
+
+// GetAPIVersion retrieves the value of the APIVersion field in the declarative configuration.
+func (b *PrometheusServiceLevelApplyConfiguration) GetAPIVersion() *string {
+	return b.TypeMetaApplyConfiguration.APIVersion
+}
+
 // GetName retrieves the value of the Name field in the declarative configuration.
 func (b *PrometheusServiceLevelApplyConfiguration) GetName() *string {
 	b.ensureObjectMetaApplyConfigurationExists()
 	return b.ObjectMetaApplyConfiguration.Name
+}
+
+// GetNamespace retrieves the value of the Namespace field in the declarative configuration.
+func (b *PrometheusServiceLevelApplyConfiguration) GetNamespace() *string {
+	b.ensureObjectMetaApplyConfigurationExists()
+	return b.ObjectMetaApplyConfiguration.Namespace
 }
